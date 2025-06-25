@@ -4,7 +4,7 @@ import "./App.css";
 function Header() {
 	return (
 		<>
-			<h1 className="nameGame">Tic Tac Toe Game</h1>;
+			<h1 className="words">Tic Tac Toe Game</h1>
 			<br />
 		</>
 	);
@@ -23,10 +23,20 @@ function App() {
 	const [xIsNext, setXIsNext] = useState(true);
 
 	function Handler(i) {
+		if (squares[i] || calculateWinner(squares)) return;
+
 		const nextSquares = squares.slice();
-		xIsNext == true ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
+		nextSquares[i] = xIsNext ? "X" : "O";
 		setSquares(nextSquares);
 		setXIsNext(!xIsNext);
+	}
+
+	const winner = calculateWinner(squares);
+	let status = "";
+	if (winner) {
+		status = `the winner is ${winner}`;
+	} else {
+		status = "the next player is " + (xIsNext ? "x" : "o").toUpperCase();
 	}
 
 	return (
@@ -43,8 +53,29 @@ function App() {
 				<Square value={squares[7]} onSquareClick={() => Handler(7)} />
 				<Square value={squares[8]} onSquareClick={() => Handler(8)} />
 			</div>
+			<h3 className="words">{status}</h3>
 		</>
 	);
+}
+
+function calculateWinner(square) {
+	const rules = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6],
+	];
+	for (let i = 0; i < rules.length; i++) {
+		const [a, b, c] = rules[i];
+		if (square[a] == square[b] && square[b] == square[c]) {
+			return square[a];
+		}
+	}
+	return false;
 }
 
 export default App;
